@@ -22,7 +22,7 @@ class Sphere:
         self.pos_node, self.pos_elem = self.node_elem_positions()
         self.len_elem = np.diff(self.pos_elem, axis=1)
         
-        self.r_xi, self.wt_xi = self.int_points()
+        self.r_xi, self.wt_xi, self.gp_xi = self.int_points()
         
         self.N = self.shape_functions()
         self.J = self.jacobian_mat()
@@ -39,6 +39,9 @@ class Sphere:
         return node_positions, elem_positions
     
     def shape_functions(self):
+# =============================================================================
+#         fix to have the right dimensions
+# =============================================================================
         N = np.append(1-self.gp, 1+self.gp, axis=1)
         return N
     
@@ -47,7 +50,12 @@ class Sphere:
         return J
     
     def gradient_mat(self):
-        B = 1
+        B_row1 = np.array([[-1 / np.sum(self.pos_elem, axis=1)],
+                           [ 1 / np.sum(self.pos_elem, axis=1)]])
+        B_row1 = np.repeat(B_row1, self.n_gp)
+        B_row1 = np.reshape(B_row1, (1, 2, -1))
+        B_row2 = np.array([[1 / (2 * self.r_xi * (1 - self.gp))]])
+        B = B_row2
         return B
     
     def int_points(self):
@@ -58,7 +66,10 @@ class Sphere:
         # corresponding weights
         wt_xi = self.wt.T * np.ones((self.n_ele, self.n_gp))
         wt_xi = np.reshape(wt_xi, (1, -1))
-        return r_xi, wt_xi
+        # gauss points repeated for each element
+        gp_xi = self.gp.T * np.ones((self.n_ele, self.n_gp))
+        gp_xi = np.reshape(gp_xi, (1, -1))
+        return r_xi, wt_xi, gp_xi
     
     def mass_mat(self):
         mass_mat = 1

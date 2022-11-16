@@ -8,8 +8,11 @@ Main run file
 from sphere import Sphere
 from fem_solver import FEMSolver
 
+import numpy as np
+import matplotlib.pyplot as plt
+
 sphere = Sphere()
 solver = FEMSolver(sphere)
 
-print(sphere.r_xi)
-print(sphere.wt_xi)
+print(sphere.gp_xi)
+print(sphere.N)

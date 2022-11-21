@@ -9,6 +9,8 @@ An OOP-based FEA solver in python based on my Matlab FEA solver created at UCSD 
 2. Optimal time stepping algorithm.
    - Only for implicit.
 3. Time estimate.
+4. Documentation within all functions (docstrings for each method in each class).
+5. Damping (Rayleigh or other method).
   
 ## Questions
 

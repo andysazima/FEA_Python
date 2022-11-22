@@ -11,15 +11,18 @@ import matplotlib.pyplot as plt
 from sphere import Sphere
 from fem_solver import FEMSolver
 
-sphere = Sphere()
-solver = FEMSolver(sphere)
+sphere  = Sphere()
+solver  = FEMSolver(sphere)
+results = solver.spherical_pressure()
 
-print(sphere.M_GLO)
-print(sphere.M_GLO.shape)
-print(sphere.C_GLO)
-print(sphere.C_GLO.shape)
-print(sphere.K_GLO)
-print(sphere.K_GLO.shape)
+print(solver.dt)
+
+# print(sphere.M_GLO)
+# print(sphere.M_GLO.shape)
+# print(sphere.C_GLO)
+# print(sphere.C_GLO.shape)
+# print(sphere.K_GLO)
+# print(sphere.K_GLO.shape)
 # print(sphere.r_xi[0,0])
 # print(sphere.r_xi.shape)
 

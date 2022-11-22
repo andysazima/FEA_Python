@@ -29,9 +29,9 @@ class Sphere:
         self.J = self.jacobian_mat()
         self.B = self.gradient_mat()
         
-        self.M_GLO = self.mass_mat()
+        self.M_GLO, self.M_LOC, self.M_GLO_LUMP = self.mass_mat()
+        self.K_GLO, self.K_LOC = self.stif_mat()
         self.C_GLO = self.damp_mat()
-        self.K_GLO = self.stif_mat()
         
         
     def node_elem_positions(self):
@@ -51,7 +51,6 @@ class Sphere:
         N : np.array -- shape = [1,2,n_gp]
             Shape functions are the same for every element. Only different at 
             each Gauss point.
-
         '''
         N = 0.5 * np.array([1-self.gp.T, 1+self.gp.T])
         N = np.transpose(N, axes=(1,0,2))
@@ -69,7 +68,6 @@ class Sphere:
             Converts the lengths in physical coordinates to isoparametric 
             coordinates for each element for easy calculation. Only different 
             for each element.
-
         '''
         J = np.transpose(0.5 * self.len_elem)
         
@@ -85,7 +83,6 @@ class Sphere:
         B : np.array -- shape = [3,2,n_ele,n_gp]
             Describes the strain relationships for each element at each Gauss 
             point. This changes for each element at each Gauss point.
-
         '''
         B_row1 = np.array([[-1 / np.diff(self.pos_elem, n=1, axis=1),
                              1 / np.diff(self.pos_elem, n=1, axis=1)]])
@@ -99,17 +96,16 @@ class Sphere:
     
     def int_points(self):
         '''
-        Description
+        Creates integration-point-based variables
 
         Returns
         -------
-        r_xi : TYPE
-            DESCRIPTION.
-        wt_xi : TYPE
-            DESCRIPTION.
-        gp_xi : TYPE
-            DESCRIPTION.
-
+        r_xi :  np.array -- shape = [n_ele,n_gp]
+            Physical coordinates at each integration point.
+        wt_xi : np.array -- shape = [n_ele,n_gp]
+            Weights at each integration point.
+        gp_xi : np.array -- shape = [n_ele,n_gp]
+            Gauss points at each integration point.
         '''
         # Integration points in the sphere (physical coordinates)
         term_1 = 0.5 * np.sum(self.pos_elem, axis=1).T * np.ones((self.n_gp,1))
@@ -142,15 +138,14 @@ class Sphere:
                 mass_mat_loc_gp[:,:,i,j] = 4 * np.pi * self.wt_xi[i,j] * \
                     np.matmul(self.N[:,:,j].T * self.rho, self.N[:,:,j]) * \
                     self.r_xi[i,j]**2 * self.J[0,i]
+        
         mass_mat_loc = np.sum(mass_mat_loc_gp, axis=3)
-          
         for i in range(0, self.n_ele):
             mass_mat[i:i+2, i:i+2] = mass_mat[i:i+2, i:i+2] + mass_mat_loc[:,:,i]
             
-        if self.lump_mass == True:
-            mass_mat = np.sum(mass_mat, axis=1) * np.eye(self.n_node)
+        mass_mat_lump = np.sum(mass_mat, axis=1) * np.eye(self.n_node)
         
-        return mass_mat
+        return mass_mat, mass_mat_loc, mass_mat_lump
     
     
     def damp_mat(self):
@@ -173,6 +168,5 @@ class Sphere:
         for i in range(0, self.n_ele):
             stif_mat[i:i+2, i:i+2] = stif_mat[i:i+2, i:i+2] + stif_mat_loc[:,:,i]
         
-        return stif_mat
-    
+        return stif_mat, stif_mat_loc
         

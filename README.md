@@ -1,6 +1,7 @@
 # FEA_Python
 
 An OOP-based FEA solver in python based on my Matlab FEA solver created at UCSD during grad school.
+Developed using Python 3.8.10
 
 ## To-do / Plans for FEM Code
 

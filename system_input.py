@@ -41,7 +41,7 @@ def sphere_properties():
     #  1  = reduced integration
     #  2  = full integration
     # 3-6 = higher accuracy integration
-    n_gp = 3
+    n_gp = 2
     # =============================================================================
     return R_i, R_o, E, v, rho, lump_mass, P_0, n_ele, n_gp
     
@@ -50,15 +50,15 @@ def solver_properties():
     # ALGORITHM PARAMETERS (NEWMARK-BETA METHOD)
     # =============================================================================
     # beta Parameter [float]
-    beta  = 0.25
+    beta  = 0.
     # gamma Parameter [float]
     gamma = 0.5
     # =============================================================================
     # ANALYSIS PARAMETERS
     # =============================================================================
     # Critical Time Step Ratio [float]
-    t_cr_ratio = 0.99
+    t_cr_ratio = 1
     # Total Time [float]
-    t_tot = 5.0
+    t_tot = 5
     # =============================================================================
     return beta, gamma, t_cr_ratio, t_tot

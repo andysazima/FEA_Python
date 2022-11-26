@@ -17,7 +17,7 @@ class Sphere:
         self.n_node = int(self.n_ele + 1)
         self.d_0    = np.zeros((self.n_node, 1))
         self.v_0    = np.zeros((self.n_node, 1))
-
+        
         self.pos_node, self.pos_elem = self.node_elem_positions()
         self.len_elem = np.diff(self.pos_elem, axis=1)
         
@@ -29,7 +29,8 @@ class Sphere:
         self.J = self.jacobian_mat()
         self.B = self.gradient_mat()
         
-        self.M_GLO, self.M_LOC, self.M_GLO_LUMP = self.mass_mat()
+        self.M_GLO_CONS, self.M_LOC_CONS, \
+            self.M_GLO_LUMP, self.M_LOC_LUMP = self.mass_mat()
         self.K_GLO, self.K_LOC = self.stif_mat()
         self.C_GLO = self.damp_mat()
         
@@ -87,8 +88,8 @@ class Sphere:
         B_row1 = np.array([[-1 / np.diff(self.pos_elem, n=1, axis=1),
                              1 / np.diff(self.pos_elem, n=1, axis=1)]])
         B_row1 = np.repeat(B_row1, self.n_gp, axis=3)
-        B_row2 = np.array([[1 / (2 * self.r_xi * (1 - self.gp.T)),
-                            1 / (2 * self.r_xi * (1 + self.gp.T))]])
+        B_row2 = np.array([[1 / (2 * self.r_xi) * (1 - self.gp.T),
+                            1 / (2 * self.r_xi) * (1 + self.gp.T)]])
         B = np.vstack((B_row1,B_row2,B_row2))
         
         return B
@@ -131,6 +132,7 @@ class Sphere:
     
     def mass_mat(self):
         mass_mat_loc_gp = np.zeros((2, 2, self.n_ele, self.n_gp))
+        mass_mat_loc_lump = np.zeros((2, 2, self.n_ele))
         mass_mat = np.zeros((self.n_node, self.n_node))
         
         for i in range(0, self.n_ele):
@@ -141,11 +143,13 @@ class Sphere:
         
         mass_mat_loc = np.sum(mass_mat_loc_gp, axis=3)
         for i in range(0, self.n_ele):
-            mass_mat[i:i+2, i:i+2] = mass_mat[i:i+2, i:i+2] + mass_mat_loc[:,:,i]
+            mass_mat[i:i+2, i:i+2] = mass_mat[i:i+2, i:i+2] + \
+                mass_mat_loc[:,:,i]
+            mass_mat_loc_lump[:,:,i] = np.sum(mass_mat_loc[:,:,i], axis=1) * np.eye(2)
             
         mass_mat_lump = np.sum(mass_mat, axis=1) * np.eye(self.n_node)
         
-        return mass_mat, mass_mat_loc, mass_mat_lump
+        return mass_mat, mass_mat_loc, mass_mat_lump, mass_mat_loc_lump
     
     
     def damp_mat(self):

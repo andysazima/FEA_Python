@@ -11,11 +11,14 @@ import matplotlib.pyplot as plt
 from sphere import Sphere
 from fem_solver import FEMSolver
 
-sphere  = Sphere()
-solver  = FEMSolver(sphere)
-results = solver.spherical_pressure()
+sphere = Sphere()
+solver = FEMSolver(sphere)
+solver.spherical_pressure()
 
-print(solver.dt)
+fig, ax = plt.subplots(2,1)
+ax[0].plot(solver.t_hist, sphere.d[0,:])
+ax[1].plot(solver.t_hist, sphere.F[0,:])
+ax[:].ion()
 
 # print(sphere.M_GLO)
 # print(sphere.M_GLO.shape)

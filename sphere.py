@@ -11,7 +11,7 @@ from system_input import sphere_properties
 from gauss_int import gauss_int_params
 
 class Sphere:
-    R_i, R_o, E, v, rho, lump_mass, P_0, n_ele, n_gp = sphere_properties()
+    R_i, R_o, E, nu, rho, lump_mass, alpha_0, alpha_1, P_0, n_ele, n_gp = sphere_properties()
     gp, wt = gauss_int_params(n_gp)
     def __init__(self):
         self.n_node = int(self.n_ele + 1)
@@ -32,7 +32,7 @@ class Sphere:
         self.M_GLO_CONS, self.M_LOC_CONS, \
             self.M_GLO_LUMP, self.M_LOC_LUMP = self.mass_mat()
         self.K_GLO, self.K_LOC = self.stif_mat()
-        self.C_GLO = self.damp_mat()
+        self.C_GLO_CONS, self.C_GLO_LUMP = self.damp_mat()
         
         
     def node_elem_positions(self):
@@ -121,8 +121,8 @@ class Sphere:
     
     
     def elas_mat(self):
-        lam = self.E * self.v / ((1 + self.v) * (1 - 2 * self.v))
-        mu  = self.E / (2 * (1 + self.v))
+        lam = self.E * self.nu / ((1 + self.nu) * (1 - 2 * self.nu))
+        mu  = self.E / (2 * (1 + self.nu))
         elas_mat = np.array([[lam + 2 * mu, lam, lam],
                              [lam, lam + 2 * mu, lam],
                              [lam, lam, lam + 2 * mu]])
@@ -153,9 +153,10 @@ class Sphere:
     
     
     def damp_mat(self):
-        damp_mat = np.zeros((self.n_node, self.n_node))
+        damp_mat      = self.alpha_0 * self.M_GLO_CONS + self.alpha_1 * self.K_GLO
+        damp_mat_lump = self.alpha_0 * self.M_GLO_LUMP + self.alpha_1 * self.K_GLO
         
-        return damp_mat
+        return damp_mat, damp_mat_lump
     
         
     def stif_mat(self):

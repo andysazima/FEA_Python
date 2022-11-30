@@ -5,8 +5,6 @@ Developed using Python 3.8.10
 
 ## To-do / Plans for FEM Code
 
-1. Create barebones FEM code to solve like original Matlab code.
-   - Make better methods for shape functions, gradient matrix, and jacobian matrix.
 2. Optimal time stepping algorithm.
    - Only for implicit.
 3. Time estimate.

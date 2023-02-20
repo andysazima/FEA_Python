@@ -1,0 +1,26 @@
+{
+	"workbench.colorCustomizations": {
+		"[Gruvbox Dark Hard]": {},
+		"activityBar.activeBackground": "#224422",
+		"activityBar.background": "#224422",
+		"activityBar.foreground": "#e7e7e7",
+		"activityBar.inactiveForeground": "#e7e7e799",
+		"activityBarBadge.background": "#6a6ab5",
+		"activityBarBadge.foreground": "#e7e7e7",
+		"commandCenter.border": "#e7e7e799",
+		"sash.hoverBorder": "#224422",
+		"statusBar.background": "#112211",
+		"statusBar.foreground": "#e7e7e7",
+		"statusBarItem.hoverBackground": "#224422",
+		"statusBarItem.remoteBackground": "#112211",
+		"statusBarItem.remoteForeground": "#e7e7e7",
+		"titleBar.activeBackground": "#112211",
+		"titleBar.activeForeground": "#e7e7e7",
+		"titleBar.inactiveBackground": "#11221199",
+		"titleBar.inactiveForeground": "#e7e7e799",
+		"[Monokai Dimmed]": {}
+	},
+	"peacock.color": "#112211",
+	"python.formatting.provider": "black",
+	"python.linting.enabled": true
+}

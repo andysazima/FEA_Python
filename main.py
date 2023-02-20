@@ -5,15 +5,14 @@ Created on Mon Nov  7 19:07:40 2022
 
 Main run file
 """
-import numpy as np
+from fem_solver import FEMSolver
+from sphere import Sphere
+import time
 import matplotlib.pyplot as plt
 plt.rcParams["figure.dpi"] = 500
-import time
 
 start = time.time()
 
-from sphere import Sphere
-from fem_solver import FEMSolver
 
 sphere = Sphere()
 solver = FEMSolver(sphere)
@@ -37,44 +36,42 @@ prob_text = rf"E = {sphere.E}" + "\n" + \
             r"$t_{tot}$ = " + f"{solver.t_tot}" + "\n" + \
             r"$\Delta t$ = " + f"{solver.dt:.4g}"
 
-fig, ax = plt.subplots(3,1)
+fig, ax = plt.subplots(3, 1)
 fig.text(0.92, 0.35, prob_text, fontsize=11)
 ax[0].set_title("Time Histories")
-fig.set(figwidth  = 13,
-        figheight = 8)
-ax[0].axhline(y = 0, color = 'k')
-ax[0].plot(solver.t_hist, sphere.d[0,:],  label = r"$r = R_i$")
-ax[0].plot(solver.t_hist, sphere.d[int(sphere.n_ele/2),:], label = r"$r = R_o/2$")
-ax[0].plot(solver.t_hist, sphere.d[-1,:], label = r"$r = R_o$")
-ax[0].set(ylabel = "Displacement [L]")
-ax[0].margins(x = 0)
+fig.set(figwidth=13,
+        figheight=8)
+ax[0].axhline(y=0, color='k')
+ax[0].plot(solver.t_hist, sphere.d[0, :],  label=r"$r = R_i$")
+ax[0].plot(solver.t_hist, sphere.d[int(
+    sphere.n_ele/2), :], label=r"$r = R_o/2$")
+ax[0].plot(solver.t_hist, sphere.d[-1, :], label=r"$r = R_o$")
+ax[0].set(ylabel="Displacement [L]")
+ax[0].margins(x=0)
 ax[0].grid(True)
 
-ax[1].axhline(y = 0, color = 'k')
-ax[1].plot(solver.t_hist, sphere.sig[0,:,0],  label = r"$r = R_i$")
-ax[1].plot(solver.t_hist, sphere.sig[0,:,int(sphere.n_ele/2)], label = r"$r = R_o/2$")
-ax[1].plot(solver.t_hist, sphere.sig[0,:,-1], label = r"$r = R_o$")
-ax[1].set(ylabel = r"Radial Stress [F/L$^2$]")
-ax[1].margins(x = 0)
+ax[1].axhline(y=0, color='k')
+ax[1].plot(solver.t_hist, sphere.sig[0, :, 0],  label=r"$r = R_i$")
+ax[1].plot(solver.t_hist, sphere.sig[0, :, int(
+    sphere.n_ele/2)], label=r"$r = R_o/2$")
+ax[1].plot(solver.t_hist, sphere.sig[0, :, -1], label=r"$r = R_o$")
+ax[1].set(ylabel=r"Radial Stress [F/L$^2$]")
+ax[1].margins(x=0)
 ax[1].grid(True)
 
-ax[2].axhline(y = 0, color = 'k')
-ax[2].plot(solver.t_hist, sphere.sig[1,:,0],  label = r"$r = R_i$")
-ax[2].plot(solver.t_hist, sphere.sig[1,:,int(sphere.n_ele/2)], label = r"$r = R_o/2$")
-ax[2].plot(solver.t_hist, sphere.sig[1,:,-1], label = r"$r = R_o$")
-ax[2].set(xlabel = "Time [T]",
-        ylabel = "Circumferential Stress [F/L$^2$]")
-ax[2].margins(x = 0)
+ax[2].axhline(y=0, color='k')
+ax[2].plot(solver.t_hist, sphere.sig[1, :, 0],  label=r"$r = R_i$")
+ax[2].plot(solver.t_hist, sphere.sig[1, :, int(
+    sphere.n_ele/2)], label=r"$r = R_o/2$")
+ax[2].plot(solver.t_hist, sphere.sig[1, :, -1], label=r"$r = R_o$")
+ax[2].set(xlabel="Time [T]",
+          ylabel="Circumferential Stress [F/L$^2$]")
+ax[2].margins(x=0)
 ax[2].grid(True)
-ax[2].legend(bbox_to_anchor = (0.5,-0.25), loc='upper center', ncol = 3)
+ax[2].legend(bbox_to_anchor=(0.5, -0.25), loc='upper center', ncol=3)
 
 filename = "Time Histories t_" + str(int(sphere.R_o - sphere.R_i))
 fig.savefig(filename, bbox_inches="tight")
-
-
-
-
-
 
 
 # # fig, ax = plt.subplots(3,1)
@@ -85,7 +82,8 @@ fig.savefig(filename, bbox_inches="tight")
 #         figheight = 2.5)
 # ax.axhline(y = 0, color = 'k')
 # ax.plot(solver.t_hist, sphere.sig[1,:,0,0],  label = r"$r = R_i$")
-# ax.plot(solver.t_hist, sphere.sig[1,:,int(sphere.n_ele/2),0], label = r"$r = R_o/2$")
+# ax.plot(solver.t_hist, sphere.sig[1,:,int(sphere.n_ele/2),0],
+# label = r"$r = R_o/2$")
 # ax.plot(solver.t_hist, sphere.sig[1,:,-1,-1], label = r"$r = R_o$")
 # ax.set(xlabel = "Time [T]",
 #         ylabel = "Circumferential Stress [F/L$^2$]")
@@ -95,12 +93,6 @@ fig.savefig(filename, bbox_inches="tight")
 
 # filename = "Thickness Study t_" + str(int(sphere.R_o - sphere.R_i))
 # fig.savefig(filename, bbox_inches="tight")
-
-
-
-
-
-
 
 
 # # fig, ax = plt.subplots(3,1)
@@ -117,9 +109,9 @@ fig.savefig(filename, bbox_inches="tight")
 # ax.margins(x = 0.005)
 # ax.grid(True)
 
-# filename = "Thickness Study Stress Dist t_" + str(int(sphere.R_o - sphere.R_i))
+# filename = "Thickness Study Stress Dist t_" + \
+# str(int(sphere.R_o - sphere.R_i))
 # fig.savefig(filename, bbox_inches="tight")
-
 
 
 # print(str(sphere.n_ele) + ",")
@@ -158,7 +150,8 @@ fig.savefig(filename, bbox_inches="tight")
 # 1000,
 # 0.15334622718679608,
 # ]
-# conv_plot = np.reshape(Convergence, (2, int(len(Convergence)/2)), order = "F")
+# conv_plot = np.reshape(Convergence, (2, int(len(Convergence)/2)),
+# order = "F")
 
 # fig, ax = plt.subplots(1,1)
 # fig.text(0.92, 0., prob_text, fontsize=11)
